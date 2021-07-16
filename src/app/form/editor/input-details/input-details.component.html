@@ -1,0 +1,47 @@
+<form action="" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <nb-card>
+        <nb-card-header>{{input.name}} Properties</nb-card-header>
+        <nb-card-body>
+            <input type="text" fullWidth placeholder="Label" nbInput formControlName="label">
+            <input type="text" fullWidth placeholder="ID" nbInput formControlName="id">
+            <input type="text" fullWidth placeholder="Hint" formControlName="hint" nbInput
+                *ngIf="input.name === 'TEXT' || input.name === 'NUMBER'">
+            <nb-toggle formControlName="required">Required</nb-toggle>
+            <input type="number" fullWidth placeholder="Min Length" nbInput formControlName="min_length"
+                *ngIf="input.name === 'TEXT'">
+            <input type="number" fullWidth placeholder="Max Length" nbInput formControlName="max_length"
+                *ngIf="input.name === 'TEXT'">
+            <input type="number" fullWidth placeholder="Min" nbInput formControlName="min"
+                *ngIf="input.name === 'NUMBER'">
+            <input type="number" fullWidth placeholder="Max" nbInput formControlName="max"
+                *ngIf="input.name === 'NUMBER'">
+            <nb-toggle *ngIf="input.name === 'NUMBER'" formControlName="auto_calculated">Auto Calculated</nb-toggle>
+            <textarea nbInput fullWidth placeholder="Operation" formControlName="operation"
+                *ngIf="input.name === 'NUMBER'"></textarea>
+            <nb-select placeholder="Entities" formControlName="entity"
+                *ngIf="input.name === 'REF' || input.name === 'LISTREF'" (change)="entityChoice($event)">
+                <nb-option *ngFor="let entity of entities" value="{{entity}}">{{entity}}</nb-option>
+            </nb-select>
+            <nb-select placeholder="File Types" formControlName="mime_type" *ngIf="input.name === 'FILE'"
+                (change)="fileTypeChoice($event)">
+                <nb-option *ngFor="let mime_type of mime_types" value="{{mime_type}}">{{mime_type}}</nb-option>
+            </nb-select>
+            <div *ngIf="input.name === 'DROPDOWN'">
+                <input id="dropdown_option" type="text" placeholder="Option" nbInput #option>
+                <button type="button" (click)="addOption(option)" nbButton status="primary">Add</button><br>
+                <nb-tag-list (tagRemove)="onOptionRemove($event)">
+                    <nb-tag *ngFor="let option of options" [text]="option" [removable]="true"></nb-tag>
+                </nb-tag-list>
+            </div>
+            <nb-toggle *ngIf="input.name === 'FILE' || input.name === 'DROPDOWN'" formControlName="multiple">Multiple
+            </nb-toggle>
+            <nb-select placeholder="List Types" formControlName="data_type" *ngIf="input.name === 'LIST'"
+                (change)="listTypeChoice($event)">
+                <nb-option *ngFor="let data of data_types" value="{{data}}">{{data}}</nb-option>
+            </nb-select>
+        </nb-card-body>
+        <nb-card-footer>
+            <button type="submit" nbButton status="primary">Submit</button>
+        </nb-card-footer>
+    </nb-card>
+</form>
