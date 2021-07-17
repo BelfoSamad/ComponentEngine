@@ -2,34 +2,109 @@
     <nb-layout-column>
         <nb-card [size]="'medium'">
             <nb-card-body>
-                <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                <form *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()">
                     <div *ngFor="let input of inputs" class="form-row">
+                        <!-- Inputs -->
                         <div [ngSwitch]="input.name">
-                            <input type="text" fullWidth placeholder="{{input.hint}}" nbInput *ngSwitchCase="'TEXT'"
-                                formControlName="{{input.id}}" minlength="{{input.min_length}}"
-                                maxlength="{{input.max_length}}" [required]="input.required">
-                            <input type="email" fullWidth placeholder="example@email.com" nbInput
-                                *ngSwitchCase="'EMAIL'" [required]="input.required" formControlName="{{input.id}}">
-                            <input type="url" fullWidth placeholder="www.website.com" nbInput *ngSwitchCase="'URL'"
-                                formControlName="{{input.id}}" [required]="input.required">
+                            <div *ngSwitchCase="'TEXT'">
+                                <input type="text" fullWidth placeholder="{{input.hint}}" nbInput
+                                    formControlName="{{input.id}}">
+                                <div *ngIf="form.get(input.id)?.invalid && submited">
+                                    <p *ngIf="form.get(input.id)?.errors?.minlength">
+                                        {{input.label}} must be at least {{input.min_length}} characters long.
+                                    </p>
+                                    <p *ngIf="form.get(input.id)?.errors?.maxlength">
+                                        {{input.label}} must be at least {{input.max_length}} characters long.
+                                    </p>
+                                    <p *ngIf="form.get(input.id)?.errors?.required">
+                                        {{input.label}} is required.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div *ngSwitchCase="'EMAIL'">
+                                <input type="email" fullWidth placeholder="example@email.com" nbInput
+                                    formControlName="{{input.id}}">
+                                <div *ngIf="form.get(input.id)?.invalid && submited">
+                                    <p *ngIf="form.get(input.id)?.errors?.required">
+                                        {{input.label}} is required.
+                                    </p>
+                                    <p *ngIf="form.get(input.id)?.errors?.email">
+                                        {{input.label}} shoule be an Email.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div *ngSwitchCase="'URL'">
+                                <input type="url" fullWidth placeholder="www.website.com" nbInput
+                                    formControlName="{{input.id}}">
+                                <div *ngIf="form.get(input.id)?.invalid && submited">
+                                    <p *ngIf="form.get(input.id)?.errors?.required">
+                                        {{input.label}} is required.
+                                    </p>
+                                    <p *ngIf="form.get(input.id)?.errors?.pattern">
+                                        {{input.label}} shoule be a URL.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div *ngSwitchCase="'CHECKBOX'">
+                                <nb-checkbox fullWidth (checkedChange)="toggle($event, input.id)" formControlName="{{input.id}}">{{input.label}}</nb-checkbox>
+                            </div>
+
                             <div *ngSwitchCase="'NUMBER'">
                                 <input type="number" placeholder="{{input.hint}}" nbInput formControlName="{{input.id}}"
-                                    min="{{input.min}}" max="{{input.max}}" [required]="input.required">
+                                    min="{{input.min}}" max="{{input.max}}">
                                 <button type="button" *ngIf="input.auto_calculated"
                                     (click)="autoCalculate(input.operation)" nbButton
                                     status="success">Calculate</button>
+
+                                <div *ngIf="form.get(input.id)?.invalid && submited">
+                                    <p *ngIf="form.get(input.id)?.errors?.min">
+                                        {{input.label}} must be greater than {{input.min}}.
+                                    </p>
+                                    <p *ngIf="form.get(input.id)?.errors?.max">
+                                        {{input.label}} must be lesser than {{input.max}}.
+                                    </p>
+                                    <p *ngIf="form.get(input.id)?.errors?.required">
+                                        {{input.label}} is required.
+                                    </p>
+                                </div>
                             </div><br>
+
                             <div *ngSwitchCase="'DATE'">
                                 <input [nbDatepicker]="datepicker" nbInput placeholder="22/07/1998"
-                                    [required]="input.required" formControlName="{{input.id}}">
+                                    formControlName="{{input.id}}">
                                 <nb-datepicker #datepicker></nb-datepicker>
+                                <div *ngIf="form.get(input.id)?.invalid && submited">
+                                    <p *ngIf="form.get(input.id)?.errors?.required">
+                                        {{input.label}} is required.
+                                    </p>
+                                </div>
                             </div>
-                            <nb-select [multiple]="input.multiple" placeholder="{{input.label}}" *ngSwitchCase="'DROPDOWN'"
-                                formControlName="{{input.id}}">
-                                <nb-option *ngFor="let option of input.options" [value]="option">{{option}}</nb-option>
-                            </nb-select>
-                            <input type="file" fullWidth nbInput *ngSwitchCase="'FILE'" [required]="input.required"
-                                formControlName="{{input.id}}" [accept]="input.mime_type">
+
+                            <div *ngSwitchCase="'DROPDOWN'">
+                                <nb-select [multiple]="input.multiple" placeholder="{{input.label}}"
+                                    formControlName="{{input.id}}">
+                                    <nb-option *ngFor="let option of input.options" [value]="option">{{option}}
+                                    </nb-option>
+                                </nb-select>
+                                <div *ngIf="form.get(input.id)?.invalid && submited">
+                                    <p *ngIf="form.get(input.id)?.errors?.required">
+                                        {{input.label}} is required.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div *ngSwitchCase="'FILE'">
+                                <input type="file" fullWidth nbInput formControlName="{{input.id}}"
+                                    [accept]="input.mime_type">
+                                <div *ngIf="form.get(input.id)?.invalid && submited">
+                                    <p *ngIf="form.get(input.id)?.errors?.required">
+                                        {{input.label}} is required.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <button type="submit" nbButton status="primary">Submit</button>

@@ -1,0 +1,70 @@
+[
+    {
+      "name": "TEXT",
+      "label": "First Name",
+      "id": "first_name",
+      "hint": "First Name",
+      "required": true,
+      "min_length": 5,
+      "max_length": 10
+    },
+    {
+      "name": "TEXT",
+      "label": "Last Name",
+      "id": "last_name",
+      "hint": "Last Name",
+      "required": true,
+      "min_length": 5,
+      "max_length": 10
+    },
+    {
+      "name": "NUMBER",
+      "label": "Age",
+      "id": "age",
+      "hint": "0",
+      "required": true,
+      "min": 1,
+      "max": 10,
+      "operation": "test",
+      "auto_calculated": true
+    },
+    {
+      "name": "DROPDOWN",
+      "label": "Gender",
+      "id": "gender",
+      "required": true,
+      "options": ["Female", "Male"],
+      "multiple": true
+    },
+    {
+      "name": "FILE",
+      "label": "Profile Picture",
+      "id": "profile_picture",
+      "required": true,
+      "multiple": true,
+      "mime_type": ".png"
+    },
+    {
+      "name": "CHECKBOX",
+      "label": "Employee",
+      "id": "employee"
+    },
+    {
+      "name": "EMAIL",
+      "label": "Email",
+      "id": "email",
+      "required": true
+    },
+    {
+      "name": "URL",
+      "label": "Website",
+      "id": "website",
+      "required": true
+    },
+    {
+      "name": "DATE",
+      "label": "Birthdate",
+      "id": "birthdate",
+      "required": true
+    }
+  ]

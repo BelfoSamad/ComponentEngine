@@ -15,6 +15,11 @@
     <nb-layout-column>
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <input type="text" fullWidth nbInput placeholder="Template Name" formControlName="template_name">
+            <div *ngIf="form.get('template_name')?.invalid && submited">
+                <p *ngIf="form.get('template_name')?.errors?.required">
+                    Template Name is required.
+                </p>
+            </div>
             <nb-card>
                 <nb-card-header>
                     Inputs
@@ -28,6 +33,9 @@
                     <nb-list-item *ngIf="inputs.length === 0">Add Inputs Here</nb-list-item>
                 </nb-list>
             </nb-card>
+            <p *ngIf="inputs_empty && submited">
+                There's no Component in list.
+            </p>
             <button nbButton status="primary">Save</button>
         </form>
     </nb-layout-column>

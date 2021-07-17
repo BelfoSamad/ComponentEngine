@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NbDialogRef, NbTagComponent } from '@nebular/theme';
 
 @Component({
@@ -13,6 +13,7 @@ export class InputDetailsComponent implements OnInit {
   input: any;
 
   options: any = [];
+  submited: boolean = false;
 
   //Declarations
   entities = [
@@ -38,24 +39,34 @@ export class InputDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.builder.group(this.input);
-  }
 
-  entityChoice(ev: any) {
-    this.form.patchValue({
-      entity: ev.target.value
-    })
-  }
-
-  fileTypeChoice(ev: any) {
-    this.form.patchValue({
-      mime_type: ev.target.value
-    })
-  }
-
-  listTypeChoice(ev: any) {
-    this.form.patchValue({
-      data_type: ev.target.value
-    })
+    //Set Controls
+    switch (this.input.name) {
+      case "TEXT":
+        this.form.setControl("min_length", new FormControl(this.input.min_length, [Validators.required, Validators.min(2)]));
+        this.form.setControl("max_length", new FormControl(this.input.max_length, Validators.required));
+        this.form.setControl("hint", new FormControl(this.input.hint, Validators.required));
+        break;
+      case "NUMBER":
+        this.form.setControl("min", new FormControl(this.input.min, Validators.required));
+        this.form.setControl("max", new FormControl(this.input.max, Validators.required));
+        this.form.setControl("hint", new FormControl(this.input.hint, Validators.required));
+        break;
+      case "REF":
+        this.form.setControl("entity", new FormControl(this.input.entity, Validators.required));
+        break;
+      case "LISTREF":
+        this.form.setControl("entity", new FormControl(this.input.entity, Validators.required));
+        break;
+      case "LIST":
+        this.form.setControl("data_type", new FormControl(this.input.data_type, Validators.required));
+        break;
+      case "FILE":
+        this.form.setControl("mime_type", new FormControl(this.input.mime_type, Validators.required));
+        break;
+    }
+    this.form.setControl("id", new FormControl(this.input.id, Validators.required));
+    this.form.setControl("label", new FormControl(this.input.label, Validators.required));
   }
 
   addOption(option: HTMLInputElement) {
@@ -75,10 +86,23 @@ export class InputDetailsComponent implements OnInit {
     });
   }
 
+  cancel() {
+    this.dialogRef.close(this.input);
+  }
+
   onSubmit() {
-    if (this.form.valid) {
+    this.submited = true;
+    let valid : boolean;
+
+    if (this.input.name == "DROPDOWN") {
+      valid = this.form.valid && this.options.length > 0;
+    } else {
+      valid = this.form.valid;
+    }
+
+    if (valid) {
       this.dialogRef.close(this.form.value);
-    } else alert("Fill the Whole Form");
+    }
   }
 
 }
