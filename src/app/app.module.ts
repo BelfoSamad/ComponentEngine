@@ -12,13 +12,15 @@ import { FormsModule, NgModel, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { InputDetailsComponent } from './form/editor/input-details/input-details.component';
+import { RefComponent } from './form/form/ref/ref.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     EditorComponent,
     FormComponent,
-    InputDetailsComponent
+    InputDetailsComponent,
+    RefComponent
   ],
   imports: [
     FormsModule,

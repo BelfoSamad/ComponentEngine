@@ -18,53 +18,10 @@
       "max_length": 10
     },
     {
-      "name": "NUMBER",
-      "label": "Age",
-      "id": "age",
-      "hint": "0",
+      "name": "REF",
+      "label": "ids",
+      "id": "ids",
       "required": true,
-      "min": 1,
-      "max": 10,
-      "operation": "test",
-      "auto_calculated": true
-    },
-    {
-      "name": "DROPDOWN",
-      "label": "Gender",
-      "id": "gender",
-      "required": true,
-      "options": ["Female", "Male"],
-      "multiple": true
-    },
-    {
-      "name": "FILE",
-      "label": "Profile Picture",
-      "id": "profile_picture",
-      "required": true,
-      "multiple": true,
-      "mime_type": ".png"
-    },
-    {
-      "name": "CHECKBOX",
-      "label": "Employee",
-      "id": "employee"
-    },
-    {
-      "name": "EMAIL",
-      "label": "Email",
-      "id": "email",
-      "required": true
-    },
-    {
-      "name": "URL",
-      "label": "Website",
-      "id": "website",
-      "required": true
-    },
-    {
-      "name": "DATE",
-      "label": "Birthdate",
-      "id": "birthdate",
-      "required": true
+      "entity": "session"
     }
   ]

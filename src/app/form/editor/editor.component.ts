@@ -69,10 +69,9 @@ export class EditorComponent implements OnInit {
     this.dialogService.open(InputDetailsComponent, {
       context: { input: input },
       closeOnBackdropClick: false
-    })
-      .onClose.subscribe(input => {
-        this.inputs.splice(index, 1, input);
-      });
+    }).onClose.subscribe(input => {
+      this.inputs.splice(index, 1, input);
+    });
   }
 
   onSubmit() {

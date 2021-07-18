@@ -49,7 +49,8 @@
                             </div>
 
                             <div *ngSwitchCase="'CHECKBOX'">
-                                <nb-checkbox fullWidth (checkedChange)="toggle($event, input.id)" formControlName="{{input.id}}">{{input.label}}</nb-checkbox>
+                                <nb-checkbox fullWidth (checkedChange)="toggle($event, input.id)"
+                                    formControlName="{{input.id}}">{{input.label}}</nb-checkbox>
                             </div>
 
                             <div *ngSwitchCase="'NUMBER'">
@@ -94,6 +95,30 @@
                                         {{input.label}} is required.
                                     </p>
                                 </div>
+                            </div>
+
+                            <div *ngSwitchCase="'REF'">
+                                <input type="text" fullWidth nbInput formControlName="{{input.id}}" placeholder="IDs">
+                                <button type="button" (click)="getData(input.id, input.name, input.entity)" nbButton
+                                    status="primary">Add</button><br>
+                                <div *ngIf="form.get(input.id)?.invalid && submited">
+                                    <p *ngIf="form.get(input.id)?.errors?.required">
+                                        {{input.label}} is required.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div *ngIf="input.name === 'LIST'">
+                                <input id="list_item" type="{{input.data_type}}" placeholder="Item" nbInput #item>
+                                <button type="button" (click)="addItem(item, input.id)" nbButton
+                                    status="primary">Add</button><br>
+                                <nb-tag-list (tagRemove)="onItemRemove($event, input.id)">
+                                    <nb-tag *ngFor="let item of items[input.id].value" [text]="item" [removable]="true">
+                                    </nb-tag>
+                                </nb-tag-list>
+                                <p *ngIf="!items[input.id].valid && submited">
+                                    You should add at least 1 Item.
+                                </p>
                             </div>
 
                             <div *ngSwitchCase="'FILE'">
