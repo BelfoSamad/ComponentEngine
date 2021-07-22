@@ -92,7 +92,9 @@ export class InputDetailsComponent implements OnInit {
 
   onSubmit() {
     this.submited = true;
-    let valid : boolean;
+    let valid: boolean;
+
+    //TODO: Validate NUMBER Operation
 
     if (this.input.name == "DROPDOWN") {
       valid = this.form.valid && this.options.length > 0;
@@ -101,7 +103,8 @@ export class InputDetailsComponent implements OnInit {
     }
 
     if (valid) {
-      this.dialogRef.close(this.form.value);
+      let input = this.form.value;
+      this.dialogRef.close(input);
     }
   }
 

@@ -70,6 +70,7 @@ export class EditorComponent implements OnInit {
       context: { input: input },
       closeOnBackdropClick: false
     }).onClose.subscribe(input => {
+      console.log(input);
       this.inputs.splice(index, 1, input);
     });
   }
