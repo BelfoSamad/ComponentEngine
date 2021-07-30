@@ -67,7 +67,7 @@ export class EditorComponent implements OnInit {
 
   open(input: any, index: number) {
     this.dialogService.open(InputDetailsComponent, {
-      context: { input: input },
+      context: { input: input, inputs: this.inputs },
       closeOnBackdropClick: false
     }).onClose.subscribe(input => {
       console.log(input);

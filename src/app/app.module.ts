@@ -13,6 +13,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { InputDetailsComponent } from './form/editor/input-details/input-details.component';
 import { RefComponent } from './form/form/ref/ref.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { RefComponent } from './form/form/ref/ref.component';
     NbToggleModule,
     NbTagModule,
     NbDatepickerModule.forRoot(),
+    NgbModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
