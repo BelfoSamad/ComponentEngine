@@ -53,78 +53,95 @@
                         Max is required.
                     </p>
                 </div>
-                <nb-toggle formControlName="auto_calculated">Auto Calculated</nb-toggle>
-                <h5>Operations</h5>
-                <div class="container-fluid" cdkDropListGroup>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <nb-list cdkDropListSortingDisabled cdkDropList (cdkDropListDropped)="drop($event)"
-                                [cdkDropListData]="operation_components">
-                                <nb-list-item *ngFor="let component of operation_components" cdkDrag>
-                                    {{ component.type }}
-                                </nb-list-item>
-                            </nb-list>
-                        </div>
-                        <div class="col-md-9">
-                            <nb-list cdkDropList cdkDropListDisabled [cdkDropListData]="operations"
-                                (cdkDropListDropped)="drop($event)">
-                                <nb-list-item *ngFor="let component of operations; let i = index" cdkDrag>
-                                    <div [ngSwitch]="component.type">
-                                        <div *ngSwitchCase="'NUMBER'">
-                                            <input type="number" placeholder="Value" nbInput style="width: 128px;">
+                <!-- Don't forget to add [(ngModel)]="auto_calculated" bellow -->
+                <nb-toggle [(ngModel)]="auto_calculated" formControlName="auto_calculated">Auto Calculated</nb-toggle>
+                <!------------------- OPERATIONS PART  ----------------------------->
+                <div *ngIf="auto_calculated">
+                    <h5>Operations</h5>
+                    <div class="container-fluid" cdkDropListGroup>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <nb-list cdkDropListSortingDisabled cdkDropList (cdkDropListDropped)="drop($event)"
+                                    [cdkDropListData]="operation_components">
+                                    <nb-list-item *ngFor="let component of operation_components" cdkDrag>
+                                        {{ component.type }}
+                                    </nb-list-item>
+                                </nb-list>
+                            </div>
+                            <div class="col-md-9">
+                                <nb-list cdkDropList cdkDropListDisabled [cdkDropListData]="operations"
+                                    (cdkDropListDropped)="drop($event)">
+                                    <nb-list-item *ngFor="let component of operations; let i = index" cdkDrag>
+                                        <div [ngSwitch]="component.type">
+                                            <div *ngSwitchCase="'NUMBER'">
+                                                <input type="number" (keyup)="valueKeyup($event, i)"
+                                                    [value]="component.value" placeholder="Value" nbInput
+                                                    style="width: 128px;">
+                                            </div>
+                                            <div *ngSwitchCase="'VARIABLE'">
+                                                <nb-select placeholder="ID" [selected]="component.id"
+                                                    (selectedChange)="variableChosen($event, i)">
+                                                    <nb-option *ngFor="let id of component.ids" [value]="id">{{id}}
+                                                    </nb-option>
+                                                </nb-select>
+                                            </div>
+                                            <div *ngSwitchCase="'REF'">
+                                                <nb-select placeholder="ID" [selected]="component.id"
+                                                    (selectedChange)="variableChosen($event, i)">
+                                                    <nb-option *ngFor="let id of component.ids" [value]="id">{{id}}
+                                                    </nb-option>
+                                                </nb-select>
+                                                . <input type="text" [value]="component.sub_id"
+                                                    (keyup)="subIdKeyup($event, i)" placeholder="Sub-Id" nbInput>
+                                            </div>
+                                            <div *ngSwitchCase="'LIST'">
+                                                <nb-select placeholder="Method" [selected]="component.method"
+                                                    (selectedChange)="methodChosen($event, i)">
+                                                    <nb-option value="+">Sum</nb-option>
+                                                    <nb-option value="+">Avg</nb-option>
+                                                    <nb-option value="+">Multi</nb-option>
+                                                    <nb-option value="+">Count</nb-option>
+                                                </nb-select>
+                                                <nb-select placeholder="ID" [selected]="component.id"
+                                                    (selectedChange)="variableChosen($event, i)">
+                                                    <nb-option *ngFor="let id of component.ids" [value]="id">{{id}}
+                                                    </nb-option>
+                                                </nb-select>
+                                            </div>
+                                            <div *ngSwitchCase="'LISTREF'">
+                                                <nb-select placeholder="Method" [selected]="component.method"
+                                                    (selectedChange)="methodChosen($event, i)">
+                                                    <nb-option value="+">Sum</nb-option>
+                                                    <nb-option value="+">Avg</nb-option>
+                                                    <nb-option value="+">Multi</nb-option>
+                                                    <nb-option value="+">Count</nb-option>
+                                                </nb-select>
+                                                <nb-select placeholder="ID" [selected]="component.id"
+                                                    (selectedChange)="variableChosen($event, i)">
+                                                    <nb-option *ngFor="let id of component.ids" [value]="id">{{id}}
+                                                    </nb-option>
+                                                </nb-select>
+                                                .<input type="text" [value]="component.sub_id"
+                                                    (keyup)="subIdKeyup($event, i)" placeholder="Sub-Id" nbInput>
+                                            </div>
                                         </div>
-                                        <div *ngSwitchCase="'VARIABLE'">
-                                            <nb-select placeholder="ID">
-                                                <nb-option *ngFor="let id of component.ids" [value]="id">{{id}}
-                                                </nb-option>
-                                            </nb-select>
-                                        </div>
-                                        <div *ngSwitchCase="'REF'">
-                                            <nb-select placeholder="ID">
-                                                <nb-option *ngFor="let id of component.ids" [value]="id">{{id}}
-                                                </nb-option>
-                                            </nb-select>
-                                            . <input type="text" placeholder="Sub-Id" nbInput>
-                                        </div>
-                                        <div *ngSwitchCase="'LIST'">
-                                            <nb-select placeholder="Operations">
-                                                <nb-option value="+">Sum</nb-option>
-                                                <nb-option value="+">Avg</nb-option>
-                                                <nb-option value="+">Multi</nb-option>
-                                                <nb-option value="+">Count</nb-option>
-                                            </nb-select>
-                                            <nb-select placeholder="ID">
-                                                <nb-option *ngFor="let id of component.ids" [value]="id">{{id}}
-                                                </nb-option>
-                                            </nb-select>
-                                        </div>
-                                        <div *ngSwitchCase="'LISTREF'">
-                                            <nb-select placeholder="Operations">
-                                                <nb-option value="+">Sum</nb-option>
-                                                <nb-option value="+">Avg</nb-option>
-                                                <nb-option value="+">Multi</nb-option>
-                                                <nb-option value="+">Count</nb-option>
-                                            </nb-select>
-                                            <nb-select placeholder="ID">
-                                                <nb-option *ngFor="let id of component.ids" [value]="id">{{id}}
-                                                </nb-option>
-                                            </nb-select>
-                                            .<input type="text" placeholder="Sub-Id" nbInput>
-                                        </div>
-                                    </div>
-                                    <nb-select placeholder="Op">
-                                        <nb-option value="+">+</nb-option>
-                                        <nb-option value="+">-</nb-option>
-                                        <nb-option value="+">*</nb-option>
-                                        <nb-option value="+">/</nb-option>
-                                    </nb-select>
-                                    <button nbButton type="button" (click)="delete(i)">Delete</button>
-                                </nb-list-item>
-                            </nb-list>
-                            <nb-list-item *ngIf="operations.length === 0">Add Inputs Here</nb-list-item>
+                                        <nb-select placeholder="Operation" [selected]="component.op"
+                                            (selectedChange)="operationChosen($event, i)">
+                                            <nb-option value="">NONE</nb-option>
+                                            <nb-option value="+">+</nb-option>
+                                            <nb-option value="+">-</nb-option>
+                                            <nb-option value="+">*</nb-option>
+                                            <nb-option value="+">/</nb-option>
+                                        </nb-select>
+                                        <button nbButton type="button" (click)="delete(i)">Delete</button>
+                                    </nb-list-item>
+                                    <nb-list-item *ngIf="operations.length === 0">Add Inputs Here</nb-list-item>
+                                </nb-list>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!------------------- OPERATIONS PART  ----------------------------->
             </div>
             <div *ngIf="input.name === 'REF' || input.name === 'LISTREF'">
                 <nb-select placeholder="Entities" formControlName="entity">

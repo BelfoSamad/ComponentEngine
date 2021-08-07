@@ -13,25 +13,20 @@ export class InputDetailsComponent implements OnInit {
   form!: FormGroup;
   input: any;
   inputs: any;
-  
-  operation_components: any = [];
-  operations: any = [
-    {
-      type: "VARIABLE",
-      id: null,
-      ids: ["1", "2", "3"],
-      op: null
-    }
-  ];
 
+  auto_calculated!: boolean;
+  operation_components: any = [];
+  operations: any = [];
   options: any = [];
   submited: boolean = false;
 
   //Declarations
+  //TODO: Get Entities from Database
   entities = [
     "Session",
     "User"
   ];
+  //Predefined Types
   mime_types = [
     "audio/*",
     "video/*",
@@ -65,76 +60,75 @@ export class InputDetailsComponent implements OnInit {
         this.form.setControl("hint", new FormControl(this.input.hint, Validators.required));
 
         //Setup Operation Editor
+        this.operations = this.input.operations;
         this.operation_components.push({
           type: "NUMBER",
-          value: 0,
+          value: null,
           op: null
         });
-
         this.inputs.forEach((input: any) => {
-          switch (input.name) {
-            case "NUMBER":
-              if (this.operation_components.some((comp: any) => comp.type === "VARIABLE")) {
-                this.operation_components[this.operation_components.findIndex((comp: any) => comp.type === "VARIABLE")].
-                  ids.push(input.id);
-              } else {
-                this.operation_components.push({
-                  type: "VARIABLE",
-                  id: null,
-                  ids: [input.id],
-                  op: null
-                });
-              }
-              break;
-            case "LIST":
-              if (input.data_type == "number")
-                if (this.operation_components.some((comp: any) => comp.type === "LIST")) {
-                  this.operation_components[this.operation_components.findIndex((comp: any) => comp.type === "LIST")].
+          if (input.id != "")
+            switch (input.name) {
+              case "NUMBER":
+                if (input.id != this.input.id)
+                  if (this.operation_components.some((comp: any) => comp.type === "VARIABLE")) {
+                    this.operation_components[this.operation_components.findIndex((comp: any) => comp.type === "VARIABLE")].
+                      ids.push(input.id);
+                  } else {
+                    this.operation_components.push({
+                      type: "VARIABLE",
+                      id: null,
+                      ids: [input.id],
+                      op: null
+                    });
+                  }
+                break;
+              case "LIST":
+                if (input.data_type == "number")
+                  if (this.operation_components.some((comp: any) => comp.type === "LIST")) {
+                    this.operation_components[this.operation_components.findIndex((comp: any) => comp.type === "LIST")].
+                      ids.push(input.id);
+                  } else {
+                    this.operation_components.push({
+                      type: "LIST",
+                      method: null,
+                      id: null,
+                      ids: [input.id],
+                      op: null
+                    });
+                  }
+                break;
+              case "REF":
+                if (this.operation_components.some((comp: any) => comp.type === "REF")) {
+                  this.operation_components[this.operation_components.findIndex((comp: any) => comp.type === "REF")].
                     ids.push(input.id);
                 } else {
                   this.operation_components.push({
-                    type: "LIST",
-                    method: null,
+                    type: "REF",
                     id: null,
+                    sub_id: null,
                     ids: [input.id],
                     op: null
                   });
                 }
-              break;
-            case "REF":
-              if (this.operation_components.some((comp: any) => comp.type === "REF")) {
-                this.operation_components[this.operation_components.findIndex((comp: any) => comp.type === "REF")].
-                  ids.push(input.id);
-              } else {
-                this.operation_components.push({
-                  type: "REF",
-                  id: null,
-                  sub_id: "",
-                  ids: [input.id],
-                  op: null
-                });
-              }
-              break;
-            case "LISTREF":
-              if (this.operation_components.some((comp: any) => comp.type === "LISTREF")) {
-                this.operation_components[this.operation_components.findIndex((comp: any) => comp.type === "LISTREF")].
-                  ids.push(input.id);
-              } else {
-                this.operation_components.push({
-                  type: "LISTREF",
-                  method: null,
-                  id: null,
-                  sub_id: "",
-                  ids: [input.id],
-                  op: null
-                });
-              }
-              break;
-          }
+                break;
+              case "LISTREF":
+                if (this.operation_components.some((comp: any) => comp.type === "LISTREF")) {
+                  this.operation_components[this.operation_components.findIndex((comp: any) => comp.type === "LISTREF")].
+                    ids.push(input.id);
+                } else {
+                  this.operation_components.push({
+                    type: "LISTREF",
+                    method: null,
+                    id: null,
+                    sub_id: null,
+                    ids: [input.id],
+                    op: null
+                  });
+                }
+                break;
+            }
         });
-
-        console.log(this.operation_components);
-
         break;
       case "REF":
         this.form.setControl("entity", new FormControl(this.input.entity, Validators.required));
@@ -153,6 +147,7 @@ export class InputDetailsComponent implements OnInit {
     this.form.setControl("label", new FormControl(this.input.label, Validators.required));
   }
 
+  //Options
   addOption(option: HTMLInputElement) {
     if (option.value.length > 0) {
       this.options.push(option.value)
@@ -170,6 +165,7 @@ export class InputDetailsComponent implements OnInit {
     });
   }
 
+  //Operations Editor -----------------------------------------------------------
   //Drag/Drop
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
@@ -181,11 +177,32 @@ export class InputDetailsComponent implements OnInit {
         event.currentIndex);
     }
   }
-  
+
   delete(index: number) {
     this.operations.splice(index, 1);
-  }
+  }//Delete Operation
 
+  variableChosen(id: any, index: number) {
+    this.operations[index].id = id;
+  }//Choose Variable
+
+  methodChosen(method: any, index: number) {
+    this.operations[index].method = method;
+  }//Choose Method
+
+  operationChosen(operation: any, index: number) {
+    this.operations[index].op = operation;
+  }//Choose Operation
+
+  valueKeyup(ev: any, index: number) {
+    this.operations[index].value = ev.target.value;
+  }//Type Value
+
+  subIdKeyup(ev: any, index: number) {
+    this.operations[index].sub_id = ev.target.value;
+  }//Type Value
+
+  //Dialog Related --------------------------------------------------------
   cancel() {
     this.dialogRef.close(this.input);
   }
@@ -194,8 +211,10 @@ export class InputDetailsComponent implements OnInit {
     this.submited = true;
     let valid: boolean;
 
-    //TODO: Validate NUMBER Operation
+    //Set Operation
+    this.form.setControl("operations", new FormControl(this.operations));
 
+    //Validation
     if (this.input.name == "DROPDOWN") {
       valid = this.form.valid && this.options.length > 0;
     } else {

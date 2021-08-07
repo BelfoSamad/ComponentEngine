@@ -67,10 +67,11 @@ export class EditorComponent implements OnInit {
 
   open(input: any, index: number) {
     this.dialogService.open(InputDetailsComponent, {
-      context: { input: input, inputs: this.inputs },
+      context: { input: Object.assign({}, input), inputs: this.inputs },
       closeOnBackdropClick: false
     }).onClose.subscribe(input => {
       console.log(input);
+      console.log(this.inputs);
       this.inputs.splice(index, 1, input);
     });
   }

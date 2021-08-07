@@ -16,10 +16,7 @@
 		"required": false,
 		"min": 1,
 		"max": 10,
-		"operation": {
-			"text" : "",
- 			"objects": []
-		},
+		"operations": [],
 		"auto_calculated": false
 	},
 	{

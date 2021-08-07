@@ -125,12 +125,10 @@ export class FormComponent implements OnInit {
       context: { ref: ref },
       closeOnBackdropClick: false
     }).onClose.subscribe(ids => {
-      console.log(ids instanceof Array ? ids.toString() : ids);
       this.form.setControl(id, new FormControl({
         value: ids instanceof Array ? ids.toString() : ids,
         disabled: true
-      },
-        Validators.required));
+      }, Validators.required));
     });
   }
 
